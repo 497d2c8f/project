@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block title %}
+		<title>
+			Список голосований
+		</title>
+{% endblock title %}
+
+{% block h1 %}
+	<h1>Список голосований</h1>
+{% endblock h1 %}
+
+{% block content %}
+	{% if votings %}
+		{% for voting in votings reversed %}
+			<p>
+				<a href="{% url 'voting_page' voting.v_id %}">{{ voting.question.text }} ({{ voting.v_id|truncatechars:9 }})</a>
+			</p>
+		{% endfor %}
+	{% else %}
+		<p>Пока нет ни одного голосования.</p>
+	{% endif %}
+{% endblock content %}

@@ -1,0 +1,33 @@
+{% load static %}
+
+
+<!DOCTYPE html>
+<html>
+	<head>
+			{% block title %}block title{% endblock title %}
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<link type="text/css" href="{% static 'css/styles.css' %}" rel="stylesheet" />
+	</head>
+	<body>
+		<div>
+			{% block h1 %}block h1{% endblock h1 %}
+		</div>
+		<div class="toc">
+			{% spaceless %}
+			<a href="{% url 'index' %}">Главная страница</a>
+			<a href="{% url 'program' %}">Программа</a>
+			<a href="{% url 'users:create_user' %}">Регистрация</a>
+			<a href="{% url 'users:login' %}">Вход</a>
+			{% if not user.is_anonymous %}
+				<a href="{% url 'users:logout' %}">Выход</a>
+				<a href="{% url 'votings_list' %}">Список голосований</a>
+				<a href="{% url 'create_voting' %}">Создать голосование</a>
+				<a href="{% url 'users:show_profile' user.username %}">Профиль</a>
+			{% endif %}
+			{% endspaceless %}
+		</div>
+		<div class="content">
+			{% block content %}block content{% endblock content %}
+		</div>
+	</body>
+</html>

@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block title %}
+		<title>
+			Вход
+		</title>
+{% endblock title %}
+
+{% block h1 %}
+	<h1>Вход</h1>
+{% endblock h1 %}
+
+{% block content %}
+	<p>Одноразовый ключ создается в программе, которую можно скачать <a href="{% url 'program' %}">здесь</a>.</p>
+	{% if otk_request_for_id %}
+		<h2>Этап 1/2</h2>
+		<p>Код для создания одноразового ключа:</p>
+		<p class="longhexstring">{{ otk_request_for_id }}</p>
+		<form action="" method="post">
+			{% csrf_token %}
+			<label for="otk_id">Одноразовый ключ:</label>
+			<input type="text" id="otk_id" name="otk_id" required></input>
+			<button>Загрузить</button>
+		</form>
+	{% endif %}
+	{% if otk_request_for_update %}
+		<h2>Этап 2/2</h2>
+		<p>Код для создания одноразового ключа:</p>
+		<p class="longhexstring">{{ otk_request_for_update }}</p>
+		<form action="" method="post">
+			{% csrf_token %}
+			<input id="username" type="hidden" name="username" value="{{ username }}">
+			<label for="otk">Одноразовый ключ:</label>
+			<input type="text" id="otk" name="otk" required></input>
+			<button>Загрузить</button>
+		</form>
+	{% endif %}
+{% endblock content %}

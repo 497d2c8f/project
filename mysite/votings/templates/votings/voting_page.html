@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block title %}
+		<title>
+			Голосование #{{ voting_data.v_id|truncatechars:9 }}
+		</title>
+{% endblock title %}
+
+{% block h1 %}
+	<h1>Голосование #{{ voting_data.v_id|truncatechars:9 }}</h1>
+{% endblock h1 %}
+
+{% block content %}
+
+	<div>{% include "./voting_page/registration.html" %}</div>
+
+	<div>{% include "./voting_page/text.html" %}</div>
+
+	<div>{% include "./voting_page/mediators.html" %}</div>
+
+	<div>{% include "./voting_page/communication.html" %}</div>
+
+{% endblock content %}

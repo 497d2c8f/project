@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+
+{% block title %}
+		<title>
+			Регистрация
+		</title>
+{% endblock title %}
+
+{% block h1 %}
+	<h1>Регистрация</h1>
+{% endblock h1 %}
+
+{% block content %}
+	<p>Одноразовый ключ создается в программе, которую можно скачать <a href="{% url 'program' %}">здесь</a>.</p>
+	<p>Код для создания одноразового ключа:</p>
+	<p class="longhexstring">{{ otk_request_for_id }}</p>
+	<form action="" method="post">
+		{% csrf_token %}
+		<label for="otk_id">Одноразовый ключ:</label>
+		<input type="text" id="otk_id" name="otk_id" required></input>
+		<button>Загрузить</button>
+	</form>
+{% endblock content %}

@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block title %}
+		<title>
+			Сообщения участников голосования #{{ v_id|truncatechars:9 }}
+		</title>
+{% endblock title %}
+
+{% block h1 %}
+	<h1>Сообщения участников голосования #{{ v_id|truncatechars:9 }}</h1>
+{% endblock h1 %}
+
+{% block content %}
+	...
+{% endblock content %}

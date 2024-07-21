@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %}
+		<title>
+			Создать голосование
+		</title>
+{% endblock title %}
+
+{% block h1 %}
+	<h1>Создать голосование</h1>
+{% endblock h1 %}
+
+{% block content %}
+	<p>Чтобы создать голосование, необходимо:</p>
+	<p>
+		1. <a href="{% url 'program' %}">Скачать</a> программу с сайта.<br>
+		2. Войти в программу при помощи своего файла с ключами.<br>
+		3. В программе в режиме "Агенство" создать файл голосования.<br>
+		4. Загрузить файл на эту страницу.
+	</p>
+	{% if user_profile_has_public_keys %}
+		<form action="" method="post" enctype="multipart/form-data">
+			{% csrf_token %}
+			{{ upload_voting_file_form }}
+			<button>Загрузить</button>
+		</form>
+	{% else %}
+		<p><b>Чтобы создать голосование, необходимо загрузить в свой профиль публичные ключи.</b></p>
+	{% endif %}
+{% endblock content %}

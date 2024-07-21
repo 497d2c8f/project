@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block title %}
+		<title>
+			Профиль {{ username|truncatechars:9 }}
+		</title>
+{% endblock title %}
+
+{% block h1 %}
+	<h1>Профиль {{ username|truncatechars:9 }}</h1>
+{% endblock h1 %}
+
+{% block content %}
+	<p>ID: {{ username|truncatechars:9 }}</p>
+	<p>Контакты: {{ contacts }}</p>
+	{% if user.username == username %}
+		{% if user_has_public_keys %}
+			<p>Публичные ключи загружены.</p>
+		{% else %}
+			<p><b>Публичные ключи ещё не загружены.</b></p>
+		{% endif %}
+		<p>Чтобы загрузить публичные ключи, необходимо открыть программу при помощи своего секретного файла и выбрать пункт "Скопировать публичные ключи в буфер обмена". После чего вставить скопированные ключи в форму ниже и нажать кнопку "Загрузить".</p>
+		<form action="" method="post">
+			{% csrf_token %}
+			<label for="public_keys">Новые публичные ключи:</label>
+			<input type="text" id="public_keys" name="public_keys" required></input>
+			<button>Загрузить</button>
+		</form>
+		<h3>Связанные с Вами голосования</h3>
+		<p>Автор:</p>
+		{% for voting in votings.author %}
+			<a href="{% url 'voting_page' voting.v_id %}">{{ voting.question.text|truncatewords:9 }} ({{ voting.v_id|truncatechars:9 }})</a>
+		{% endfor %}
+		{% if not votings.author %}
+			<p>Отсутствуют</p>
+		{% endif %}
+		<p>Участник:</p>
+		{% for voting in votings.participant %}
+			<a href="{% url 'voting_page' voting.v_id %}">{{ voting.question.text|truncatewords:9 }} ({{ voting.v_id|truncatechars:9 }})</a>
+		{% endfor %}
+		{% if not votings.participant %}
+			<p>Отсутствуют</p>
+		{% endif %}
+	{% endif %}
+{% endblock content %}

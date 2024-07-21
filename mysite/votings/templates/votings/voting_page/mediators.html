@@ -1,0 +1,49 @@
+<p>Количество голосующих: {{ voting_data.electors|length }}</p>
+<p>Посредники ({{ voting_data.mediators|length }}):</p>
+
+{% if profile_has_public_keys and user.username != voting_data.author and not user.is_anonymous and voting_data.registration %}
+	{% if user.username not in voting_data.mediators %}
+		<form action="" method="post">
+			{% csrf_token %}
+			<input id="become_mediator" type="hidden" name="become_mediator" value="yes">
+			<button>Стать посредником</button>
+		</form>
+	{% else %}
+		<form action="" method="post">
+			{% csrf_token %}
+			<input id="become_mediator" type="hidden" name="become_mediator" value="no">
+			<button>Отменить посредничество</button>
+		</form>
+	{% endif %}
+{% endif %}
+
+<p>
+	{% if voting_data.mediators %}
+		{% for mediator, num_of_electors in voting_data.mediators.items %}
+			{% if user.username == mediator %}
+				<b>{{ mediator|truncatechars:9 }} ({{ num_of_electors }})</b>
+			{% elif user.is_anonymous %}
+				{{ mediator|truncatechars:9 }} ({{ num_of_electors }})
+			{% else %}
+				<form action="" method="post">
+					{% csrf_token %}
+					<label for="select_mediator">
+						<a href="{% url 'users:show_profile' mediator %}">{{ mediator|truncatechars:9 }} ({{ num_of_electors }})</a>
+					</label>
+					{% if voting_data.registration and user.username != voting_data.author and profile_has_public_keys %}
+						{% if mediator != selected_mediator and not selected_mediator %}
+							<input id="select_mediator" type="hidden" name="select_mediator" value="yes">
+							<input id="selected_mediator_username" type="hidden" name="selected_mediator_username" value="{{ mediator }}">
+							<button>+</button>
+						{% elif mediator == selected_mediator %}
+							<input id="select_mediator" type="hidden" name="select_mediator" value="no">
+							<button>X</button>
+						{% endif %}
+					{% endif %}
+				</form>
+			{% endif %}
+		{% endfor %}
+	{% else %}
+		Отсутствуют
+	{% endif %}
+</p>

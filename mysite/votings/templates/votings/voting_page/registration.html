@@ -1,0 +1,16 @@
+{% if voting_data.registration %}
+	<p><b>Регистрация открыта</b></p>
+{% else %}
+	<p><b>Регистрация закрыта</b></p>
+{% endif %}
+
+<form action="" method="post">
+	{% csrf_token %}
+	{% if user.username == voting_data.author and not voting_data.registration %}
+		<input id="registration" type="hidden" name="registration" value="True">
+		<button>Открыть</button>
+	{% elif user.username == voting_data.author and voting_data.registration %}
+		<input id="registration" type="hidden" name="registration" value="">
+		<button>Закрыть</button>
+	{% endif %}
+</form>

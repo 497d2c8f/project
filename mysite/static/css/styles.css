@@ -1,0 +1,59 @@
+@font-face {
+	font-family: 'CascadiaMono';
+	src: url('../fonts/CascadiaMono.ttf') format("truetype");
+}
+
+html {
+	font-family: 'CascadiaMono';
+	font-size: 100%;
+}
+
+body {
+	margin: 0;
+	margin-right: calc(-1 * (100vw - 100%));
+}
+
+h1 {
+	margin: 0;
+	padding:  1% 0 1% 0;
+	text-align: center;
+	background: gray;
+}
+
+a {
+	color: darkblue;
+	text-decoration: none;
+}
+
+a:hover {
+	color: darkred;
+}
+
+.toc {
+	background: lightgray;
+	text-align: center;
+	padding: 0.25% 0;
+}
+
+.toc a {
+	margin: 1%;
+}
+
+.content {
+	margin: 1%;
+	text-align: center;
+}
+
+input {
+	font-family: 'CascadiaMono';
+	font-size: 100%;
+}
+
+button {
+	font-family: 'CascadiaMono';
+	font-size: 100%;
+}
+
+.content .longhexstring {
+	overflow-wrap: break-word;
+}

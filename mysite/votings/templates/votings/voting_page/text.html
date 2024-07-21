@@ -1,0 +1,14 @@
+<h3>{{ voting_data.question }}</h3>
+<p>{{ voting_data.description }}</p>
+<p>Варианты ответов:</p>
+{% for option in voting_data.options %}
+	<div>{{ option.option_id }}: {{ option.text }} {% if msg_voting_summary_exists %}({{ option.counter }}){% endif %}</div>
+{% endfor %}
+{% if user.username != voting_data.author and not user.is_anonymous %}
+	<p>Автор: <a href="{% url 'users:show_profile' voting_data.author %}">{{ voting_data.author|truncatechars:9 }}</a></p>
+{% elif user.is_anonymous %}
+	<p>Автор: {{ voting_data.author|truncatechars:9 }}</p>
+{% else %}
+	<p>Автор: <b>{{ voting_data.author|truncatechars:9 }}</b></p>
+{% endif %}
+<p>ID: {{ voting_data.v_id }}</p>
