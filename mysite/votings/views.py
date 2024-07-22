@@ -91,7 +91,7 @@ class VotingPageView(LoginRequiredMixin, TemplateView):
 		response = self._process_pressed_buttons(request, voting, participant)
 		if response:
 			return response
-		self._process_valid_forms(v_id, voting, participant)
+		self._process_valid_forms(request, v_id, voting, participant)
 
 		return render(
 			request,
@@ -136,7 +136,7 @@ class VotingPageView(LoginRequiredMixin, TemplateView):
 			return self._get_msg_wa_file_response(request, voting, participant)
 
 	@staticmethod
-	def _process_valid_forms(v_id, voting, participant):
+	def _process_valid_forms(request, v_id, voting, participant):
 		UploadMsgEMFileForm(request.POST, request.FILES).save_file(v_id, participant)
 		UploadMsgMWFileForm(request.POST, request.FILES).save_file(participant)
 		UploadMsgMAFileForm(request.POST, request.FILES).save_file(voting, participant)
