@@ -1,4 +1,4 @@
-<p>Количество голосующих: {{ voting_data.electors|length }}</p>
+<p>Количество голосующих: {{ voting_data.electors|length }} (проголосовавших: {{ voting_data.voted_participants_number }})</p>
 <p>Посредники ({{ voting_data.mediators|length }}):</p>
 
 {% if profile_has_public_keys and user.username != voting_data.author and not user.is_anonymous and voting_data.registration %}
