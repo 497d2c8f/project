@@ -71,6 +71,7 @@ class VotingPageView(LoginRequiredMixin, TemplateView):
 				'voting_data': voting.get_voting_data(),
 				'profile_has_public_keys': request.user.profile.has_public_keys(),
 				'selected_mediator': self._try_to_get_selected_mediator(request, voting),
+				'mediators_with_msg_ma_number': self._get_mediators_with_msg_ma_number(voting),
 				'upload_msg_mw_file_form': UploadMsgMWFileForm(),
 				'upload_msg_em_file_form': UploadMsgEMFileForm(),
 				'upload_msg_ma_file_form': UploadMsgMAFileForm(),
@@ -78,8 +79,7 @@ class VotingPageView(LoginRequiredMixin, TemplateView):
 				'msg_em_exists': self._msg_em_exists(participant),
 				'msg_mw_exists': self._msg_mw_exists(participant),
 				'msg_ma_exists': self._msg_ma_exists(participant),
-				'msg_voting_summary_exists': self._msg_voting_summary_exists(voting),
-				'mediators_with_msg_ma_number': self._get_mediators_with_msg_ma_number(voting)
+				'msg_voting_summary_exists': self._msg_voting_summary_exists(voting)
 			}
 		)
 
