@@ -15,6 +15,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 
 
 class IndexView(TemplateView):
+
 	template_name = 'votings/index.html'
 
 	def get(self, request, *args, **kwargs):
@@ -22,6 +23,7 @@ class IndexView(TemplateView):
 
 
 class VotingsListView(LoginRequiredMixin, ListView):
+
 	model = Voting
 	template_name = 'votings/votings_list.html'
 
@@ -53,6 +55,7 @@ class CreateVotingView(LoginRequiredMixin, TemplateView):
 				v_id=voting.v_id
 			)
 		return redirect('index')
+
 
 class VotingPageView(LoginRequiredMixin, TemplateView):
 
@@ -100,6 +103,7 @@ class VotingPageView(LoginRequiredMixin, TemplateView):
 				'voting_data': Voting.objects.get(v_id=v_id).get_voting_data(),
 				'profile_has_public_keys': request.user.profile.has_public_keys(),
 				'selected_mediator': self._try_to_get_selected_mediator(request, voting),
+				'mediators_with_msg_ma_number': self._get_mediators_with_msg_ma_number(voting),
 				'upload_msg_mw_file_form': UploadMsgMWFileForm(),
 				'upload_msg_em_file_form': UploadMsgEMFileForm(),
 				'upload_msg_ma_file_form': UploadMsgMAFileForm(),
@@ -107,8 +111,7 @@ class VotingPageView(LoginRequiredMixin, TemplateView):
 				'msg_em_exists': self._msg_em_exists(participant),
 				'msg_mw_exists': self._msg_mw_exists(participant),
 				'msg_ma_exists': self._msg_ma_exists(participant),
-				'msg_voting_summary_exists': self._msg_voting_summary_exists(voting),
-				'mediators_with_msg_ma_number': self._get_mediators_with_msg_ma_number(voting)
+				'msg_voting_summary_exists': self._msg_voting_summary_exists(voting)
 			}
 		)
 
@@ -304,8 +307,6 @@ class VotingPageView(LoginRequiredMixin, TemplateView):
 		return mediators_with_msg_ma_number
 
 
-
-
 class VotingMessagesView(LoginRequiredMixin, TemplateView):
 
 	template_name = 'votings/voting_messages.html'
@@ -314,15 +315,12 @@ class VotingMessagesView(LoginRequiredMixin, TemplateView):
 		return render(request, self.template_name, {'v_id': v_id})
 
 
-
-
 class ProgramView(TemplateView):
+
 	template_name = 'votings/program.html'
 
 	def get(self, request, *args, **kwargs):
 		return render(request, self.template_name)
-
-
 
 
 class VotingManualView(LoginRequiredMixin, TemplateView):
@@ -331,11 +329,6 @@ class VotingManualView(LoginRequiredMixin, TemplateView):
 
 	def get(self, request, *args, **kwargs):
 		return render(request, self.template_name)
-
-	def post(self, request, *args, **kwargs):
-		pass
-
-
 
 
 def page_not_found(request, exception):
