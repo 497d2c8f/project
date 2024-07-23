@@ -1,5 +1,5 @@
 {% if not user.is_anonymous and user.username in voting_data.participants or user.username == voting_data.author %}
-	<a href="{% url 'voting_messages' voting_data.v_id %}"><button>Сообщения посредников и агенства</button></a>
+	<p><a href="{% url 'voting_messages' voting_data.v_id %}">Список сообщений посредников и агенства</a></p>
 {% endif %}
 
 {% if not voting_data.registration %}
