@@ -29,6 +29,7 @@ class Voting(models.Model):
 	def get_voting_data(self):
 		options = [{'option_id': option.option_id, 'text': option.text, 'counter': option.counter} for option in self.option_set.all()]
 		participants = [participant.user.username for participant in self.participant_set.all()]
+		voted_participants_number = len(self.participant_set.filter(rfp__isnull=False, e_emek_e_eaek_b__isnull=False))
 		electors = [participant.user.username for participant in self.participant_set.all() if participant.mediator]
 		mediators = {participant.user.username: len(participant.user.mediator.filter(voting=self)) for participant in self.participant_set.filter(is_mediator=True)}
 		result = {}
@@ -44,6 +45,7 @@ class Voting(models.Model):
 			'description': self.description.text,
 			'options': options,
 			'participants': participants,
+			'voted_participants_number': voted_participants_number,
 			'mediators': mediators,
 			'electors': electors,
 			'result': result
@@ -94,5 +96,5 @@ class Participant(models.Model):
 	is_mediator = models.BooleanField(default=False)
 	rfp = models.BinaryField(null=True, default=None)
 	e_emek_e_eaek_b = models.BinaryField(null=True, default=None)
-	s_m_l_h_e_emek_e_eaek_b = models.BinaryField(null=True, default=None)
+	msg_mw = models.BinaryField(null=True, default=None)
 	msg_ma = models.BinaryField(null=True, default=None)

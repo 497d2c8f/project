@@ -79,7 +79,7 @@ class UploadMsgMWFileForm(forms.Form):
 			msg_mw = read_file_object(msg_mw_file)['msg_mw']
 			m_sign_pk = participant.user.profile.sign_pk
 			if msg_mw.check(m_sign_pk):
-				participant.s_m_l_h_e_emek_e_eaek_b = serialize_to_string(msg_mw.get_data()['s_m_l_h_e_emek_e_eaek_b'])
+				participant.msg_mw = serialize_to_string(msg_mw)
 				participant.save()
 
 

@@ -15,6 +15,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 
 
 class IndexView(TemplateView):
+
 	template_name = 'votings/index.html'
 
 	def get(self, request, *args, **kwargs):
@@ -22,6 +23,7 @@ class IndexView(TemplateView):
 
 
 class VotingsListView(LoginRequiredMixin, ListView):
+
 	model = Voting
 	template_name = 'votings/votings_list.html'
 
@@ -54,6 +56,7 @@ class CreateVotingView(LoginRequiredMixin, TemplateView):
 			)
 		return redirect('index')
 
+
 class VotingPageView(LoginRequiredMixin, TemplateView):
 
 	template_name = 'votings/voting_page.html'
@@ -71,6 +74,7 @@ class VotingPageView(LoginRequiredMixin, TemplateView):
 				'voting_data': voting.get_voting_data(),
 				'profile_has_public_keys': request.user.profile.has_public_keys(),
 				'selected_mediator': self._try_to_get_selected_mediator(request, voting),
+				'mediators_with_msg_ma_number': self._get_mediators_with_msg_ma_number(voting),
 				'upload_msg_mw_file_form': UploadMsgMWFileForm(),
 				'upload_msg_em_file_form': UploadMsgEMFileForm(),
 				'upload_msg_ma_file_form': UploadMsgMAFileForm(),
@@ -78,8 +82,7 @@ class VotingPageView(LoginRequiredMixin, TemplateView):
 				'msg_em_exists': self._msg_em_exists(participant),
 				'msg_mw_exists': self._msg_mw_exists(participant),
 				'msg_ma_exists': self._msg_ma_exists(participant),
-				'msg_voting_summary_exists': self._msg_voting_summary_exists(voting),
-				'mediators_with_msg_ma_number': self._get_mediators_with_msg_ma_number(voting)
+				'msg_voting_summary_exists': self._msg_voting_summary_exists(voting)
 			}
 		)
 
@@ -91,7 +94,7 @@ class VotingPageView(LoginRequiredMixin, TemplateView):
 		response = self._process_pressed_buttons(request, voting, participant)
 		if response:
 			return response
-		self._process_valid_forms(v_id, voting, participant)
+		self._process_valid_forms(request, v_id, voting, participant)
 
 		return render(
 			request,
@@ -100,6 +103,7 @@ class VotingPageView(LoginRequiredMixin, TemplateView):
 				'voting_data': Voting.objects.get(v_id=v_id).get_voting_data(),
 				'profile_has_public_keys': request.user.profile.has_public_keys(),
 				'selected_mediator': self._try_to_get_selected_mediator(request, voting),
+				'mediators_with_msg_ma_number': self._get_mediators_with_msg_ma_number(voting),
 				'upload_msg_mw_file_form': UploadMsgMWFileForm(),
 				'upload_msg_em_file_form': UploadMsgEMFileForm(),
 				'upload_msg_ma_file_form': UploadMsgMAFileForm(),
@@ -107,8 +111,7 @@ class VotingPageView(LoginRequiredMixin, TemplateView):
 				'msg_em_exists': self._msg_em_exists(participant),
 				'msg_mw_exists': self._msg_mw_exists(participant),
 				'msg_ma_exists': self._msg_ma_exists(participant),
-				'msg_voting_summary_exists': self._msg_voting_summary_exists(voting),
-				'mediators_with_msg_ma_number': self._get_mediators_with_msg_ma_number(voting)
+				'msg_voting_summary_exists': self._msg_voting_summary_exists(voting)
 			}
 		)
 
@@ -136,7 +139,7 @@ class VotingPageView(LoginRequiredMixin, TemplateView):
 			return self._get_msg_wa_file_response(request, voting, participant)
 
 	@staticmethod
-	def _process_valid_forms(v_id, voting, participant):
+	def _process_valid_forms(request, v_id, voting, participant):
 		UploadMsgEMFileForm(request.POST, request.FILES).save_file(v_id, participant)
 		UploadMsgMWFileForm(request.POST, request.FILES).save_file(participant)
 		UploadMsgMAFileForm(request.POST, request.FILES).save_file(voting, participant)
@@ -236,8 +239,8 @@ class VotingPageView(LoginRequiredMixin, TemplateView):
 
 	@staticmethod
 	def _get_msg_wm_2_file_response(request, voting, participant):
-		s_m_l_h_e_emek_e_eaek_b = deserialize_from_string(participant.s_m_l_h_e_emek_e_eaek_b)
-		l_h_e_emek_e_eaek_b = s_m_l_h_e_emek_e_eaek_b.get_data()
+		msg_mw = deserialize_from_string(participant.msg_mw)
+		l_h_e_emek_e_eaek_b = msg_mw.get_data()['s_m_l_h_e_emek_e_eaek_b'].get_data()
 		electors = request.user.mediator.filter(voting=voting)
 		l_rfp = []
 		for elector in electors:
@@ -273,7 +276,7 @@ class VotingPageView(LoginRequiredMixin, TemplateView):
 	@staticmethod
 	def _msg_mw_exists(participant):
 		try:
-			return bool(participant.s_m_l_h_e_emek_e_eaek_b)
+			return bool(participant.msg_mw)
 		except AttributeError:
 			return False
 
@@ -304,25 +307,71 @@ class VotingPageView(LoginRequiredMixin, TemplateView):
 		return mediators_with_msg_ma_number
 
 
-
-
 class VotingMessagesView(LoginRequiredMixin, TemplateView):
 
 	template_name = 'votings/voting_messages.html'
 
 	def get(self, request, v_id, *args, **kwargs):
-		return render(request, self.template_name, {'v_id': v_id})
 
+		voting = Voting.objects.get(v_id=v_id)
+		mediators = voting.participant_set.filter(is_mediator=True)
 
+		return render(request, self.template_name, {'voting': voting, 'mediators': mediators})
+
+	def post(self, request, v_id, *args, **kwargs):
+
+		voting = Voting.objects.get(v_id=v_id)
+		mediators = voting.participant_set.filter(is_mediator=True)
+		response = self._process_pressed_buttons(request, voting)
+		if response:
+			return response
+
+		return render(request, self.template_name, {'voting': voting, 'mediators': mediators})
+
+	def _process_pressed_buttons(self, request, voting):
+
+		if 'download_msg_mw_file' in request.POST:
+			username = request.POST['download_msg_mw_file']
+			mediator = get_user_model().objects.get(username=username).participant.get(voting=voting)
+			return self._get_msg_mw_file_response(mediator, voting)
+
+		if 'download_msg_ma_file' in request.POST:
+			username = request.POST['download_msg_ma_file']
+			mediator = get_user_model().objects.get(username=username).participant.get(voting=voting)
+			return self._get_msg_ma_file_response(mediator, voting)
+
+		if 'download_msg_voting_summary_file' in request.POST:
+			return self._get_msg_voting_summary_file_response(voting)
+
+	@staticmethod
+	def _get_msg_mw_file_response(mediator, voting):
+		msg_mw = deserialize_from_string(mediator.msg_mw)
+		file_like_object = get_file_like_object(msg_mw=msg_mw)
+		m_sign_pk = mediator.user.profile.sign_pk
+		return FileResponse(file_like_object, as_attachment=False, filename=f'msg_mw__{voting.v_id[0:16]}_{m_sign_pk[0:8].hex()}_{bytes(8).hex()}')
+
+	@staticmethod
+	def _get_msg_ma_file_response(mediator, voting):
+		msg_ma = deserialize_from_string(mediator.msg_ma)
+		file_like_object = get_file_like_object(msg_ma=msg_ma)
+		m_sign_pk = mediator.user.profile.sign_pk
+		a_sign_pk = voting.author.profile.sign_pk
+		return FileResponse(file_like_object, as_attachment=False, filename=f'msg_ma__{voting.v_id[0:16]}_{m_sign_pk[0:8].hex()}_{a_sign_pk[0:8].hex()}')
+
+	@staticmethod
+	def _get_msg_voting_summary_file_response(voting):
+		msg_voting_summary = deserialize_from_string(voting.msg_voting_summary)
+		file_like_object = get_file_like_object(msg_voting_summary=msg_voting_summary)
+		a_sign_pk = voting.author.profile.sign_pk
+		return FileResponse(file_like_object, as_attachment=False, filename=f'msg_voting_summary__{voting.v_id[0:16]}_{a_sign_pk[0:8].hex()}_{bytes(8).hex()}')
 
 
 class ProgramView(TemplateView):
+
 	template_name = 'votings/program.html'
 
 	def get(self, request, *args, **kwargs):
 		return render(request, self.template_name)
-
-
 
 
 class VotingManualView(LoginRequiredMixin, TemplateView):
@@ -331,11 +380,6 @@ class VotingManualView(LoginRequiredMixin, TemplateView):
 
 	def get(self, request, *args, **kwargs):
 		return render(request, self.template_name)
-
-	def post(self, request, *args, **kwargs):
-		pass
-
-
 
 
 def page_not_found(request, exception):

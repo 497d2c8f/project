@@ -1,12 +1,5 @@
-from project_package.voting_protocol import *
-from project_package.voting_protocol import Voting as VotingObject
 from django.shortcuts import render, redirect
-from django.http import HttpResponse
-from django.urls import reverse_lazy
-from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.auth.views import LoginView
-from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import get_user_model
 from django.contrib.auth import authenticate, login
 from django.views.generic import TemplateView
