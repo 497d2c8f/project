@@ -96,5 +96,5 @@ class Participant(models.Model):
 	is_mediator = models.BooleanField(default=False)
 	rfp = models.BinaryField(null=True, default=None)
 	e_emek_e_eaek_b = models.BinaryField(null=True, default=None)
-	s_m_l_h_e_emek_e_eaek_b = models.BinaryField(null=True, default=None)
+	msg_mw = models.BinaryField(null=True, default=None)
 	msg_ma = models.BinaryField(null=True, default=None)
