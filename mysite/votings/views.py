@@ -340,6 +340,9 @@ class VotingMessagesView(LoginRequiredMixin, TemplateView):
 			mediator = get_user_model().objects.get(username=username).participant.get(voting=voting)
 			return self._get_msg_ma_file_response(mediator, voting)
 
+		if 'download_msg_voting_summary_file' in request.POST:
+			return self._get_msg_voting_summary_file_response(voting)
+
 	@staticmethod
 	def _get_msg_mw_file_response(mediator, voting):
 		msg_mw = deserialize_from_string(mediator.msg_mw)
@@ -354,6 +357,13 @@ class VotingMessagesView(LoginRequiredMixin, TemplateView):
 		m_sign_pk = mediator.user.profile.sign_pk
 		a_sign_pk = voting.author.profile.sign_pk
 		return FileResponse(file_like_object, as_attachment=False, filename=f'msg_ma__{voting.v_id[0:16]}_{m_sign_pk[0:8].hex()}_{a_sign_pk[0:8].hex()}')
+
+	@staticmethod
+	def _get_msg_voting_summary_file_response(voting):
+		msg_voting_summary = deserialize_from_string(voting.msg_voting_summary)
+		file_like_object = get_file_like_object(msg_voting_summary=msg_voting_summary)
+		a_sign_pk = voting.author.profile.sign_pk
+		return FileResponse(file_like_object, as_attachment=False, filename=f'msg_voting_summary__{voting.v_id[0:16]}_{a_sign_pk[0:8].hex()}_{bytes(8).hex()}')
 
 
 class ProgramView(TemplateView):

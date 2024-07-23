@@ -11,19 +11,39 @@
 {% endblock h1 %}
 
 {% block content %}
+
+	{% if voting.msg_voting_summary %}
+		<h3>Сообщение с результатами голосования</h3>
+		<p>
+			<form action="" method="post">
+				{% csrf_token %}
+					<input id="download_msg_voting_summary_file" type="hidden" name="download_msg_voting_summary_file" value="">
+					<button>msg_voting_summary</button>
+			</form>
+		</p>
+	{% endif %}
+
+	<h3>Сообщения посредников</h3>
+
 	{% for mediator in mediators %}
-		<div>
+
+		<p>
 			{{ mediator.user.username|truncatechars:9 }}
-			<form action="" method="post">
-				{% csrf_token %}
-					<input id="download_msg_mw_file" type="hidden" name="download_msg_mw_file" value="{{ mediator.user.username }}">
-					<button>msg_mw</button>
-			</form>
-			<form action="" method="post">
-				{% csrf_token %}
-					<input id="download_msg_ma_file" type="hidden" name="download_msg_ma_file" value="{{ mediator.user.username }}">
-					<button>msg_ma</button>
-			</form>
-		</div>
+			{% if mediator.msg_mw %}
+				<form action="" method="post">
+					{% csrf_token %}
+						<input id="download_msg_mw_file" type="hidden" name="download_msg_mw_file" value="{{ mediator.user.username }}">
+						<button>msg_mw</button>
+				</form>
+			{% endif %}
+			{% if mediator.msg_ma %}
+				<form action="" method="post">
+					{% csrf_token %}
+						<input id="download_msg_ma_file" type="hidden" name="download_msg_ma_file" value="{{ mediator.user.username }}">
+						<button>msg_ma</button>
+				</form>
+			{% endif %}
+		</p>
+
 	{% endfor %}
 {% endblock content %}
