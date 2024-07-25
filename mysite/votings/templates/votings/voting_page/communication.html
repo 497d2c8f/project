@@ -3,7 +3,7 @@
 {% endif %}
 
 {% if not user.is_anonymous and user.username in voting_data.participants or user.username == voting_data.author %}
-	<p><a href="{% url 'voting_messages' voting_data.v_id %}">Список сообщений посредников и агенства</a></p>
+	<p><a href="{% url 'voting_messages' voting_data.v_id %}">Список сообщений посредников и агентства</a></p>
 {% endif %}
 
 {% if not voting_data.registration %}
