@@ -7,6 +7,11 @@ from project_package.hash_data import hash_data
 from project_package.serialization import *
 
 
+__all__ = [
+	'Profile'
+]
+
+
 OTK_PREFIX = hash_data('votings_site')
 
 
