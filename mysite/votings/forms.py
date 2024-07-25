@@ -16,7 +16,7 @@ __all__ = [
 
 
 class UploadVotingFileForm(forms.Form):
-	file = forms.FileField(label='Загрузить файл голосования "voting__*"')
+	file = forms.FileField(label='Загрузить файл голосования "voting"')
 
 	def save_voting(self, request):
 		if self.is_valid():
@@ -53,7 +53,7 @@ class UploadVotingFileForm(forms.Form):
 
 class UploadMsgEMFileForm(forms.Form):
 
-	msg_em_file = forms.FileField(label='Загрузить файл "msg_em__*"')
+	msg_em_file = forms.FileField(label='Загрузить файл "msg_em"')
 
 	def save_file(self, v_id, participant):
 		if self.is_valid():
@@ -72,7 +72,7 @@ class UploadMsgEMFileForm(forms.Form):
 
 class UploadMsgMWFileForm(forms.Form):
 
-	msg_mw_file = forms.FileField(label='Загрузить файл "msg_mw__*"')
+	msg_mw_file = forms.FileField(label='Загрузить файл "msg_mw"')
 
 	def save_file(self, participant):
 		if self.is_valid():
@@ -86,7 +86,7 @@ class UploadMsgMWFileForm(forms.Form):
 
 class UploadMsgMAFileForm(forms.Form):
 
-	msg_ma_file = forms.FileField(label='Загрузить файл "msg_ma__*"')
+	msg_ma_file = forms.FileField(label='Загрузить файл "msg_ma"')
 
 	def save_file(self, voting, participant):
 		if self.is_valid():
@@ -101,7 +101,7 @@ class UploadMsgMAFileForm(forms.Form):
 
 class UploadMsgVotingSummaryFileForm(forms.Form):
 
-	msg_voting_summary_file = forms.FileField(label='Загрузить файл с результатами голосования "msg_voting_summary__*"')
+	msg_voting_summary_file = forms.FileField(label='Загрузить файл с результатами голосования "msg_voting_summary"')
 
 	def save_file(self, voting):
 		if self.is_valid():
