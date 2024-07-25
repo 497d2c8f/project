@@ -14,90 +14,83 @@
 		<button>Скачать файл голосования</button>
 	</form>
 
-	{% if not msg_em_exists and selected_mediator %}
-		<form action="" method="post" enctype="multipart/form-data">
-			{% csrf_token %}
-				{{ upload_msg_em_file_form }}
-				<button>Загрузить</button>
-		</form>
-	{% elif msg_em_exists and selected_mediator %}
-		<p><b>Файл "msg_em" успешно загружен. Ожидайте результатов голосования.</b></p>
-	{% endif %}
+	{% if voting_data.is_open %}
 
-	{% if user.username in voting_data.mediators and not msg_ma_exists %}
-
-		{% if not msg_mw_exists %}
-
-			<form action="" method="post">
-				{% csrf_token %}
-				<input id="download_msg_wm_1_file" type="hidden" name="download_msg_wm_1_file" value="">
-				<button>Скачать файл "msg_wm_1__*"</button>
-			</form>
+		{% if not msg_em_exists and selected_mediator %}
 			<form action="" method="post" enctype="multipart/form-data">
 				{% csrf_token %}
-				{{ upload_msg_mw_file_form }}
-				<button>Загрузить</button>
+					{{ upload_msg_em_file_form }}
+					<button>Загрузить</button>
 			</form>
-
-		{% else %}
-
-			<form action="" method="post">
-				{% csrf_token %}
-				<input id="download_msg_wm_2_file" type="hidden" name="download_msg_wm_2_file" value="">
-				<button>Скачать файл "msg_wm_2__*"</button>
-			</form>
-			<form action="" method="post" enctype="multipart/form-data">
-				{% csrf_token %}
-				{{ upload_msg_ma_file_form }}
-				<button>Загрузить</button>
-			</form>
-			<p><b>Файл "msg_mw" успешно загружен. Скачайте файл "msg_wm_2", обработайте его в программе и загрузите файл "msg_ma".</b></p>
 
 		{% endif %}
 
-	{% elif user.username in voting_data.mediators and msg_ma_exists %}
+	{% else %}
 
-		<p><b>Файл "msg_ma" успешно загружен. Ожидайте результатов голосования.</b></p>
-
-	{% endif %}
-
-	{% if user.username == voting_data.author %}
-
-		{% if mediators_with_msg_ma_number != 0 %}
-			<form action="" method="post">
-				{% csrf_token %}
-				<input id="download_msg_wa_file" type="hidden" name="download_msg_wa_file" value="">
-				<button>Скачать сообщения посредников</button>
-			</form>
+		{% if msg_em_exists and selected_mediator %}
+			<p><b>Файл "msg_em__*" успешно загружен. Ожидайте результатов голосования.</b></p>
 		{% endif %}
 
-		<p>Количество сообщений посредников: {{ mediators_with_msg_ma_number }}</p>
+		{% if user.username in voting_data.mediators and not msg_ma_exists %}
 
-		{% if msg_voting_summary_exists %}
-			<p><b>Файл с результатами голосования успешно загружен!</b></p>
-		{% else %}
+			{% if not msg_mw_exists %}
+
+				<form action="" method="post">
+					{% csrf_token %}
+					<input id="download_msg_wm_1_file" type="hidden" name="download_msg_wm_1_file" value="">
+					<button>Скачать файл "msg_wm_1__*"</button>
+				</form>
+				<form action="" method="post" enctype="multipart/form-data">
+					{% csrf_token %}
+					{{ upload_msg_mw_file_form }}
+					<button>Загрузить</button>
+				</form>
+
+			{% else %}
+
+				<form action="" method="post">
+					{% csrf_token %}
+					<input id="download_msg_wm_2_file" type="hidden" name="download_msg_wm_2_file" value="">
+					<button>Скачать файл "msg_wm_2__*"</button>
+				</form>
+				<form action="" method="post" enctype="multipart/form-data">
+					{% csrf_token %}
+					{{ upload_msg_ma_file_form }}
+					<button>Загрузить</button>
+				</form>
+				<p><b>Файл "msg_mw" успешно загружен. Скачайте файл "msg_wm_2", обработайте его в программе и загрузите файл "msg_ma".</b></p>
+
+			{% endif %}
+
+		{% elif user.username in voting_data.mediators and msg_ma_exists %}
+
+			<p><b>Файл "msg_ma" успешно загружен. Ожидайте результатов голосования.</b></p>
+
+		{% endif %}
+
+		{% if user.username == voting_data.author %}
+
+			<p>Количество сообщений посредников для Вас: {{ mediators_with_msg_ma_number }}</p>
+			{% if mediators_with_msg_ma_number > 0 %}
+				<form action="" method="post">
+					{% csrf_token %}
+					<input id="download_msg_wa_file" type="hidden" name="download_msg_wa_file" value="">
+					<button>Скачать сообщения посредников</button>
+				</form>
+			{% endif %}
+
+			{% if msg_voting_summary_exists %}
+				<p><b>Файл с результатами голосования успешно загружен!</b></p>
+			{% endif %}
+
 			<form action="" method="post" enctype="multipart/form-data">
 				{% csrf_token %}
 				{{ upload_msg_voting_summary_file_form }}
 				<button>Загрузить</button>
 			</form>
+
 		{% endif %}
 
 	{% endif %}
 
 {% endif %}
-
-
-
-
-	{% comment %}
-
-		{% if user.username in voting_data.participants and voting_data.result %}
-			<form action="" method="post">
-				{% csrf_token %}
-				<input id="download_result_file" type="hidden" name="download_result_file" value="">
-				<button>Скачать файл с результатами голосования</button>
-			</form>
-		{% endif %}
-
-	{% endcomment %}
