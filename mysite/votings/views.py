@@ -96,24 +96,7 @@ class VotingPageView(LoginRequiredMixin, TemplateView):
 			return response
 		self._process_valid_forms(request, v_id, voting, participant)
 
-		return render(
-			request,
-			self.template_name,
-			{
-				'voting_data': Voting.objects.get(v_id=v_id).get_voting_data(),
-				'profile_has_public_keys': request.user.profile.has_public_keys(),
-				'selected_mediator': self._try_to_get_selected_mediator(request, voting),
-				'mediators_with_msg_ma_number': self._get_mediators_with_msg_ma_number(voting),
-				'upload_msg_mw_file_form': UploadMsgMWFileForm(),
-				'upload_msg_em_file_form': UploadMsgEMFileForm(),
-				'upload_msg_ma_file_form': UploadMsgMAFileForm(),
-				'upload_msg_voting_summary_file_form': UploadMsgVotingSummaryFileForm(),
-				'msg_em_exists': self._msg_em_exists(participant),
-				'msg_mw_exists': self._msg_mw_exists(participant),
-				'msg_ma_exists': self._msg_ma_exists(participant),
-				'msg_voting_summary_exists': self._msg_voting_summary_exists(voting)
-			}
-		)
+		return redirect('voting_page', v_id=v_id)
 
 	def _process_pressed_buttons(self, request, voting, participant):
 
