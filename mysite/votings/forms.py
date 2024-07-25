@@ -1,6 +1,7 @@
 from django import forms
 from .models import *
 from project_package.message import *
+from project_package.files import *
 from project_package.serialization import *
 from project_package.ciphertext import Ciphertext
 

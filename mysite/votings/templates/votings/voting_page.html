@@ -12,6 +12,8 @@
 
 {% block content %}
 
+	<a href="{% url 'voting_manual' %}">Инструкция по проведению/прохождению голосования</a>
+
 	<div>{% include "./voting_page/registration.html" %}</div>
 
 	<div>{% include "./voting_page/text.html" %}</div>

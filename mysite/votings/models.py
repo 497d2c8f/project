@@ -20,6 +20,7 @@ class Voting(models.Model):
 	author = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, null=True, default=None)
 	v_id = models.CharField(max_length=32, null=True, default='')
 	registration = models.BooleanField(default=False)
+	is_open = models.BooleanField(default=False)
 	voting_object = models.BinaryField(null=True, default=None)
 	msg_voting_summary = models.BinaryField(null=True, default=None)
 
@@ -41,6 +42,7 @@ class Voting(models.Model):
 			'author': self.author.username,
 			'v_id': self.v_id,
 			'registration': self.registration,
+			'is_open': self.is_open,
 			'question': self.question.text,
 			'description': self.description.text,
 			'options': options,
@@ -57,7 +59,6 @@ class Voting(models.Model):
 		v = deserialize_from_string(self.voting_object)
 		v.set_d_m_pk(d_m_pk)
 		self.voting_object = serialize_to_string(v)
-		self.save()
 
 class Question(models.Model):
 

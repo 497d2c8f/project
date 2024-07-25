@@ -126,6 +126,9 @@ class VotingPageView(LoginRequiredMixin, TemplateView):
 		if 'registration' in request.POST:
 			self._toggle_registration(request, voting)
 
+		if 'is_open' in request.POST:
+			self._toggle_voting_is_open(request, voting)
+
 		if 'download_voting_file' in request.POST:
 			return self._get_voting_file_response(request, voting, participant)
 
@@ -209,9 +212,16 @@ class VotingPageView(LoginRequiredMixin, TemplateView):
 	@staticmethod
 	def _toggle_registration(request, voting):
 		voting.registration = bool(request.POST['registration'])
-		voting.save()
-		if not voting.registration:
+		if voting.registration:
+			voting.is_open = False
+		else:
 			voting.update_voting_object()
+		voting.save()
+
+	@staticmethod
+	def _toggle_voting_is_open(request, voting):
+		voting.is_open = bool(request.POST['is_open'])
+		voting.save()
 
 	@staticmethod
 	def _get_voting_file_response(request, voting, participant):

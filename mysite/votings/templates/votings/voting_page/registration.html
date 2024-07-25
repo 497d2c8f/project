@@ -4,13 +4,38 @@
 	<p><b>Регистрация закрыта</b></p>
 {% endif %}
 
-<form action="" method="post">
-	{% csrf_token %}
-	{% if user.username == voting_data.author and not voting_data.registration %}
-		<input id="registration" type="hidden" name="registration" value="True">
-		<button>Открыть</button>
-	{% elif user.username == voting_data.author and voting_data.registration %}
-		<input id="registration" type="hidden" name="registration" value="">
-		<button>Закрыть</button>
-	{% endif %}
-</form>
+{% if user.username == voting_data.author %}
+
+	<form action="" method="post">
+		{% csrf_token %}
+		{% if not voting_data.registration %}
+			<input id="registration" type="hidden" name="registration" value="True">
+			<button>Открыть</button>
+		{% elif voting_data.registration %}
+			<input id="registration" type="hidden" name="registration" value="">
+			<button>Закрыть</button>
+		{% endif %}
+	</form>
+
+{% endif %}
+
+{% if voting_data.is_open %}
+	<p><b>Голосование открыто</b></p>
+{% else %}
+	<p><b>Голосование закрыто</b></p>
+{% endif %}
+
+{% if user.username == voting_data.author and not voting_data.registration %}
+
+	<form action="" method="post">
+		{% csrf_token %}
+		{% if not voting_data.is_open %}
+			<input id="is_open" type="hidden" name="is_open" value="True">
+			<button>Открыть</button>
+		{% elif voting_data.is_open %}
+			<input id="is_open" type="hidden" name="is_open" value="">
+			<button>Закрыть</button>
+		{% endif %}
+	</form>
+
+{% endif %}
