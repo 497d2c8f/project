@@ -35,6 +35,8 @@
 						<input id="download_msg_mw_file" type="hidden" name="download_msg_mw_file" value="{{ mediator.user.username }}">
 						<button>msg_mw</button>
 				</form>
+			{% else %}
+				msg_mw отсутствует...
 			{% endif %}
 			{% if mediator.msg_ma %}
 				<form action="" method="post">
@@ -42,6 +44,8 @@
 						<input id="download_msg_ma_file" type="hidden" name="download_msg_ma_file" value="{{ mediator.user.username }}">
 						<button>msg_ma</button>
 				</form>
+			{% else %}
+				msg_ma отсутствует...
 			{% endif %}
 		</p>
 
