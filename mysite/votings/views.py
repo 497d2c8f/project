@@ -1,5 +1,5 @@
 from project_package.voting import Voting as VotingObject
-from project_package.files import get_file_like_object
+from project_package.files import get_file_like_object, SUFFIX_LENGTH
 from project_package.ciphertext import Ciphertext
 from project_package.hash_data import hash_data
 from project_package.serialization import *
@@ -96,24 +96,7 @@ class VotingPageView(LoginRequiredMixin, TemplateView):
 			return response
 		self._process_valid_forms(request, v_id, voting, participant)
 
-		return render(
-			request,
-			self.template_name,
-			{
-				'voting_data': Voting.objects.get(v_id=v_id).get_voting_data(),
-				'profile_has_public_keys': request.user.profile.has_public_keys(),
-				'selected_mediator': self._try_to_get_selected_mediator(request, voting),
-				'mediators_with_msg_ma_number': self._get_mediators_with_msg_ma_number(voting),
-				'upload_msg_mw_file_form': UploadMsgMWFileForm(),
-				'upload_msg_em_file_form': UploadMsgEMFileForm(),
-				'upload_msg_ma_file_form': UploadMsgMAFileForm(),
-				'upload_msg_voting_summary_file_form': UploadMsgVotingSummaryFileForm(),
-				'msg_em_exists': self._msg_em_exists(participant),
-				'msg_mw_exists': self._msg_mw_exists(participant),
-				'msg_ma_exists': self._msg_ma_exists(participant),
-				'msg_voting_summary_exists': self._msg_voting_summary_exists(voting)
-			}
-		)
+		return redirect('voting_page', v_id=v_id)
 
 	def _process_pressed_buttons(self, request, voting, participant):
 
@@ -233,10 +216,10 @@ class VotingPageView(LoginRequiredMixin, TemplateView):
 				m_sign_pk = mediator_profile.sign_pk
 				mediator_kem_pk = mediator_profile.kem_pk
 				voting_object.set_d_sel_m_pk({'m_sign_pk': m_sign_pk, 'm_kem_pk': mediator_kem_pk})
-				selected_m_sign_pk = m_sign_pk[0:8]
+				selected_m_sign_pk = m_sign_pk
 			except AttributeError: # а точнее AttributeError
 				pass
-		return FileResponse(get_file_like_object(voting=voting_object), as_attachment=False, filename=f'voting__{voting_object.get_v_id()[0:8].hex()}_{selected_m_sign_pk[0:8].hex()}')
+		return FileResponse(get_file_like_object(voting=voting_object), as_attachment=False, filename=f'voting__{voting_object.get_v_id().hex()[:SUFFIX_LENGTH]}_{selected_m_sign_pk.hex()[:SUFFIX_LENGTH]}')
 
 	@staticmethod
 	def _get_msg_wm_1_file_response(request, voting):
@@ -245,7 +228,7 @@ class VotingPageView(LoginRequiredMixin, TemplateView):
 		msg_wm_1 = MsgWM1(l_e_emek_e_eaek_b)
 		file_like_object = get_file_like_object(msg_wm_1=msg_wm_1)
 		m_sign_pk = request.user.profile.sign_pk
-		return FileResponse(file_like_object, as_attachment=False, filename=f'msg_wm_1__{voting.v_id[0:16]}_{bytes(8).hex()}_{m_sign_pk[0:8].hex()}')
+		return FileResponse(file_like_object, as_attachment=False, filename=f'msg_wm_1__{voting.v_id[:SUFFIX_LENGTH]}_{bytes(32).hex()[:SUFFIX_LENGTH]}_{m_sign_pk.hex()[:SUFFIX_LENGTH]}')
 
 	@staticmethod
 	def _get_msg_wm_2_file_response(request, voting, participant):
@@ -262,7 +245,7 @@ class VotingPageView(LoginRequiredMixin, TemplateView):
 		msg_wm_2 = MsgWM2(l_rfp)
 		file_like_object = get_file_like_object(msg_wm_2=msg_wm_2)
 		m_sign_pk = request.user.profile.sign_pk
-		return FileResponse(file_like_object, as_attachment=False, filename=f'msg_wm_2__{voting.v_id[0:16]}_{bytes(8).hex()}_{m_sign_pk[0:8].hex()}')
+		return FileResponse(file_like_object, as_attachment=False, filename=f'msg_wm_2__{voting.v_id[:SUFFIX_LENGTH]}_{bytes(32).hex()[:SUFFIX_LENGTH]}_{m_sign_pk.hex()[:SUFFIX_LENGTH]}')
 
 	@staticmethod
 	def _get_msg_wa_file_response(request, voting, participant):
@@ -274,7 +257,7 @@ class VotingPageView(LoginRequiredMixin, TemplateView):
 			msg_wa[m_sign_pk] = msg_ma
 		file_like_object = get_file_like_object(msg_wa=msg_wa)
 		a_sign_pk = voting.author.profile.sign_pk
-		return FileResponse(file_like_object, as_attachment=False, filename=f'msg_wa__{voting.v_id[0:16]}_{bytes(8).hex()}_{a_sign_pk[0:8].hex()}')
+		return FileResponse(file_like_object, as_attachment=False, filename=f'msg_wa__{voting.v_id[:SUFFIX_LENGTH]}_{bytes(32).hex()[:SUFFIX_LENGTH]}_{a_sign_pk.hex()[:SUFFIX_LENGTH]}')
 
 	@staticmethod
 	def _msg_em_exists(participant):
@@ -358,7 +341,7 @@ class VotingMessagesView(LoginRequiredMixin, TemplateView):
 		msg_mw = deserialize_from_string(mediator.msg_mw)
 		file_like_object = get_file_like_object(msg_mw=msg_mw)
 		m_sign_pk = mediator.user.profile.sign_pk
-		return FileResponse(file_like_object, as_attachment=False, filename=f'msg_mw__{voting.v_id[0:16]}_{m_sign_pk[0:8].hex()}_{bytes(8).hex()}')
+		return FileResponse(file_like_object, as_attachment=False, filename=f'msg_mw__{voting.v_id[:SUFFIX_LENGTH]}_{m_sign_pk.hex()[:SUFFIX_LENGTH]}_{bytes(32).hex()[:SUFFIX_LENGTH]}')
 
 	@staticmethod
 	def _get_msg_ma_file_response(mediator, voting):
@@ -366,14 +349,14 @@ class VotingMessagesView(LoginRequiredMixin, TemplateView):
 		file_like_object = get_file_like_object(msg_ma=msg_ma)
 		m_sign_pk = mediator.user.profile.sign_pk
 		a_sign_pk = voting.author.profile.sign_pk
-		return FileResponse(file_like_object, as_attachment=False, filename=f'msg_ma__{voting.v_id[0:16]}_{m_sign_pk[0:8].hex()}_{a_sign_pk[0:8].hex()}')
+		return FileResponse(file_like_object, as_attachment=False, filename=f'msg_ma__{voting.v_id[:SUFFIX_LENGTH]}_{m_sign_pk.hex()[:SUFFIX_LENGTH]}_{a_sign_pk.hex()[:SUFFIX_LENGTH]}')
 
 	@staticmethod
 	def _get_msg_voting_summary_file_response(voting):
 		msg_voting_summary = deserialize_from_string(voting.msg_voting_summary)
 		file_like_object = get_file_like_object(msg_voting_summary=msg_voting_summary)
 		a_sign_pk = voting.author.profile.sign_pk
-		return FileResponse(file_like_object, as_attachment=False, filename=f'msg_voting_summary__{voting.v_id[0:16]}_{a_sign_pk[0:8].hex()}_{bytes(8).hex()}')
+		return FileResponse(file_like_object, as_attachment=False, filename=f'msg_voting_summary__{voting.v_id[:SUFFIX_LENGTH]}_{a_sign_pk.hex()[:SUFFIX_LENGTH]}_{bytes(32).hex()[:SUFFIX_LENGTH]}')
 
 
 class ProgramView(TemplateView):

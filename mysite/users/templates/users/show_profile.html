@@ -13,6 +13,11 @@
 {% block content %}
 	<p>ID: {{ username|truncatechars:9 }}</p>
 	<p>Контакты: {{ contacts }}</p>
+	<form action="" method="post">
+		{% csrf_token %}
+		{{ update_contacts_form }}
+		<button>Обновить контакты</button>
+	</form>
 	{% if user.username == username %}
 		{% if user_has_public_keys %}
 			<p>Публичные ключи загружены.</p>

@@ -3,7 +3,8 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth import get_user_model
 from django.contrib.auth import authenticate, login
 from django.views.generic import TemplateView
-from .models import Profile
+from .models import *
+from .forms import *
 from project_package.serialization import *
 import os
 
@@ -75,12 +76,14 @@ class ShowProfileView(LoginRequiredMixin, TemplateView):
 		content = {
 			'username': username,
 			'contacts': user.profile.contacts,
+			'update_contacts_form': UpdateContactsForm(),
 			'user_has_public_keys': user_has_public_keys,
 			'votings': votings
 		}
 		return render(request, self.template_name, context=content)
 
 	def post(self, request, *args, **kwargs):
+		UpdateContactsForm(request.POST).save_contacts(request)
 		try:
 			public_keys = deserialize_from_string(bytes.fromhex(request.POST['public_keys']))
 			profile = get_user_model().objects.get(username=request.user.username).profile

@@ -3,7 +3,7 @@
 {% endif %}
 
 {% if not user.is_anonymous and user.username in voting_data.participants or user.username == voting_data.author %}
-	<p><a href="{% url 'voting_messages' voting_data.v_id %}">Список сообщений посредников и агенства</a></p>
+	<p><a href="{% url 'voting_messages' voting_data.v_id %}">Список сообщений посредников и агентства</a></p>
 {% endif %}
 
 {% if not voting_data.registration %}
@@ -28,7 +28,7 @@
 	{% else %}
 
 		{% if msg_em_exists and selected_mediator %}
-			<p><b>Файл "msg_em__*" успешно загружен. Ожидайте результатов голосования.</b></p>
+			<p><b>Файл "msg_em" успешно загружен. Ожидайте результатов голосования.</b></p>
 		{% endif %}
 
 		{% if user.username in voting_data.mediators and not msg_ma_exists %}
@@ -38,7 +38,7 @@
 				<form action="" method="post">
 					{% csrf_token %}
 					<input id="download_msg_wm_1_file" type="hidden" name="download_msg_wm_1_file" value="">
-					<button>Скачать файл "msg_wm_1__*"</button>
+					<button>Скачать файл "msg_wm_1"</button>
 				</form>
 				<form action="" method="post" enctype="multipart/form-data">
 					{% csrf_token %}
@@ -51,7 +51,7 @@
 				<form action="" method="post">
 					{% csrf_token %}
 					<input id="download_msg_wm_2_file" type="hidden" name="download_msg_wm_2_file" value="">
-					<button>Скачать файл "msg_wm_2__*"</button>
+					<button>Скачать файл "msg_wm_2"</button>
 				</form>
 				<form action="" method="post" enctype="multipart/form-data">
 					{% csrf_token %}
